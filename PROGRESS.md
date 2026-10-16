@@ -19,5 +19,7 @@
 
 ## Remaining release work
 
-- Finish integration review, final documentation and GitHub PR delivery.
+- Implementation and local integration review complete. The user explicitly approved publishing to `Marsy24/brawls_craft`, branch `feat/complete-first-release`, and opening a PR into `main`.
+- Terminal push has no GitHub credentials. Publication uses the connected GitHub integration, preserving the exact Git tree contents of the verified local commits. GitHub Actions results are pending until the PR is opened.
+- Production HTTP check passed: index and all four generated assets load under `/brawls_craft/` with exact build contents. This validates hosting paths, not WebGL rendering.
 - Execute `docs/MANUAL_QA.md`: browser controls, rendering, viewport layouts, human balance and long-session performance. The current implementation is a release candidate, not a fully accepted release.
