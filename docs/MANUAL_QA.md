@@ -1,6 +1,6 @@
 # Browser acceptance checklist — NOT EXECUTED in this environment
 
-The managed environment did not provide the supported browser-control capability. DOM tests use happy-dom and do **not** render CSS, execute WebGL/Phaser or establish real browser performance. No screenshot or real FPS claim is made.
+Local Playwright was available, but Chromium was missing and both browser-download attempts returned invalid/truncated ZIP archives. Browser smoke coverage is configured in `e2e/game.spec.ts` and `.github/workflows/checks.yml`; CI results are recorded separately when available. DOM tests use happy-dom and do **not** render CSS, execute WebGL/Phaser or establish real browser performance. No screenshot or real FPS claim is made.
 
 Use `npm ci && npm run dev`, then test Chrome/Firefox and Safari if available. Record browser/version, OS, CPU/GPU and display size.
 

@@ -141,14 +141,14 @@ export class App {
     )
       .map(
         (c) =>
-          `<button data-action="class" data-id="${c.id}" class="class-option ${c.id === d.id ? "selected" : ""}" style="--class-color:${c.color}"><span class="class-mini">${heroArt(c.id)}</span><span><strong>${c.name}</strong><small>${c.title}</small></span><i>›</i></button>`,
+          `<button data-action="class" data-id="${esc(c.id)}" class="class-option ${c.id === d.id ? "selected" : ""}" style="--class-color:${c.color}"><span class="class-mini">${heroArt(c.id)}</span><span><strong>${c.name}</strong><small>${c.title}</small></span><i>›</i></button>`,
       )
       .join(
         "",
       )}</div><div class="hero-stage"><div class="sigil"></div><div class="hero-full">${heroArt(d.id, this.chosenColor, d.color, this.appearance)}</div><div class="hero-plinth"></div><p>${d.title}</p></div><section class="panel create-info"><p class="eyebrow">${d.range < 150 ? "БЛИЖНИЙ БОЙ" : "ДАЛЬНИЙ БОЙ"} · ${d.resource.toUpperCase()}</p><h2>${d.name}</h2><p>${d.description}</p><p class="passive"><b>Пассивный эффект</b><br>${d.passive}</p><div class="skill-preview">${d.skills.map((s, i) => `<span class="ability-icon" tabindex="0" title="${s.name}: ${s.description}">${s.icon}<small>${i + 1}</small></span>`).join("")}</div><label>Имя героя<input id="hero-name" maxlength="24" value="${esc(this.nameDraft)}" placeholder="Как вас будут помнить?" autocomplete="off"></label><div class="customize"><label>Облик<select id="appearance">${["Искатель", "Хранитель", "Изгнанник"].map((n, i) => `<option value="${i}" ${i === this.appearance ? "selected" : ""}>${n}</option>`).join("")}</select></label><label>Цвет доспеха<input type="color" id="armor-color" value="${this.chosenColor}"></label></div><button class="button primary full" data-action="create-confirm" ${this.save.characters.length >= 10 ? "disabled" : ""}>Принять клятву <span>➶</span></button><small class="muted">До 10 героев. Косметическая коллекция общая.</small></section></div></main>`;
   }
   private roster() {
-    return `<main class="content wide"><div class="section-heading"><div><p class="eyebrow">ВАШ ОТРЯД</p><h1>Хранители Завета</h1></div><button class="button primary" data-action="create" ${this.save.characters.length >= 10 ? "disabled" : ""}>＋ Новый герой</button></div><div class="roster">${this.save.characters.map((c) => `<button class="panel roster-card ${this.save.selected === c.id ? "selected" : ""}" data-action="select-hero" data-id="${c.id}"><div>${this.portrait(c)}</div><h3>${esc(c.name)}</h3><p>${CLASSES[c.classId].name} · Ур. ${c.level}</p><span>${c.completed.length}/5 экспедиций</span></button>`).join("")}</div></main>`;
+    return `<main class="content wide"><div class="section-heading"><div><p class="eyebrow">ВАШ ОТРЯД</p><h1>Хранители Завета</h1></div><button class="button primary" data-action="create" ${this.save.characters.length >= 10 ? "disabled" : ""}>＋ Новый герой</button></div><div class="roster">${this.save.characters.map((c) => `<button class="panel roster-card ${this.save.selected === c.id ? "selected" : ""}" data-action="select-hero" data-id="${esc(c.id)}"><div>${this.portrait(c)}</div><h3>${esc(c.name)}</h3><p>${CLASSES[c.classId].name} · Ур. ${c.level}</p><span>${c.completed.length}/5 экспедиций</span></button>`).join("")}</div></main>`;
   }
   private camp() {
     return `<div class="shell"><nav class="sidebar" aria-label="Главное меню">${nav.map(([id, icon, name]) => `<button data-action="tab" data-id="${id}" class="nav-item ${this.tab === id ? "active" : ""}"><span>${icon}</span>${name}${id === "talents" && talentBudget(this.c.level) > this.c.talents.length ? '<i class="dot"></i>' : ""}</button>`).join("")}<div class="chapter"><span>ГЛАВА I</span><b>Угасающий мир</b><div class="progress"><i style="width:${this.c.completed.length * 20}%"></i></div><small>${this.c.completed.length} из 5 экспедиций</small></div></nav><main class="content">${this.content(this.tab)}</main></div>`;
@@ -231,7 +231,7 @@ export class App {
               const equipped = c.equipment[i.slot] === i.id;
               const current = c.inventory.find((x) => x.id === c.equipment[i.slot]);
               const diff = i.value - (current?.value ?? 0);
-              return `<article class="item-card panel" style="--rarity:${RARITY_COLORS[i.rarity]}"><span class="item-glyph">${i.slot === "weapon" ? "⚔" : i.slot === "armor" ? "⬡" : "◇"}</span><small>${RARITY_NAMES[i.rarity]} · Ур. ${i.level}</small><h3>${esc(i.name)}</h3><p>${slots[i.slot]} · <b>+${i.value}${i.slot === "charm" ? "%" : ""}</b> <span class="${diff >= 0 ? "positive" : "negative"}">(${diff >= 0 ? "+" : ""}${diff} к надетому)</span></p><div class="item-actions"><button class="button ${equipped ? "equipped" : ""}" data-action="equip" data-id="${i.id}" ${this.world || equipped ? "disabled" : ""}>${equipped ? "✓ Надето" : "Надеть"}</button><button class="button quiet" data-action="salvage" data-id="${i.id}" ${this.world || equipped ? "disabled" : ""}>Разобрать · ${salvageValue(i)} ◈</button></div></article>`;
+              return `<article class="item-card panel" style="--rarity:${RARITY_COLORS[i.rarity]}"><span class="item-glyph">${i.slot === "weapon" ? "⚔" : i.slot === "armor" ? "⬡" : "◇"}</span><small>${RARITY_NAMES[i.rarity]} · Ур. ${i.level}</small><h3>${esc(i.name)}</h3><p>${slots[i.slot]} · <b>+${i.value}${i.slot === "charm" ? "%" : ""}</b> <span class="${diff >= 0 ? "positive" : "negative"}">(${diff >= 0 ? "+" : ""}${diff} к надетому)</span></p><div class="item-actions"><button class="button ${equipped ? "equipped" : ""}" data-action="equip" data-id="${esc(i.id)}" ${this.world || equipped ? "disabled" : ""}>${equipped ? "✓ Надето" : "Надеть"}</button><button class="button quiet" data-action="salvage" data-id="${esc(i.id)}" ${this.world || equipped ? "disabled" : ""}>Разобрать · ${salvageValue(i)} ◈</button></div></article>`;
             })
             .join("")
         : '<div class="empty panel"><span>⚔</span><h2>История только начинается</h2><p>Завершите экспедицию, чтобы получить первый предмет.</p><button class="button" data-action="tab" data-id="missions">К экспедициям →</button></div>'
@@ -320,7 +320,7 @@ export class App {
       `${w.mission.kind === "waves" || w.mission.kind === "defend" ? `Волна ${w.wave}/4 · ` : ""}Врагов: ${w.enemies.length}${w.mission.kind === "defend" ? ` · Маяк ${Math.ceil((w.beacon.hp / w.beacon.maxHp) * 100)}%` : ""}${w.nextWave > 0 ? " · Подготовка…" : ""}`,
     );
     set("time-text", `${duration(w.time)} · ${w.mission.optional}`);
-    set("fps-text", `${Math.round(fps)} FPS`);
+    set("fps-text", fps > 0 ? `${Math.round(fps)} FPS` : "Измерение FPS…");
     set(
       "buffs",
       [
@@ -358,7 +358,10 @@ export class App {
   private overlay(tab: string) {
     const el = this.root.querySelector("#pause-panel");
     if (!el) return;
-    el.innerHTML = `<div class="modal-backdrop"><section class="modal"><div class="modal-nav"><button class="button primary" data-action="resume">← В бой</button>${nav
+    this.root.querySelectorAll<HTMLElement>("#hud, #game-host").forEach((node) => {
+      node.inert = true;
+    });
+    el.innerHTML = `<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-label="Меню экспедиции"><div class="modal-nav"><button class="button primary" data-action="resume">← В бой</button>${nav
       .filter((n) => !["missions", "collection"].includes(n[0]))
       .map(
         ([id, , name]) =>
@@ -371,6 +374,9 @@ export class App {
   }
   private resume() {
     this.root.querySelector("#pause-panel")?.replaceChildren();
+    this.root.querySelectorAll<HTMLElement>("#hud, #game-host").forEach((node) => {
+      node.inert = false;
+    });
     this.game?.scene.resumeBattle();
   }
   private complete(w: World) {
@@ -456,7 +462,7 @@ export class App {
         this.world.finish(false);
         this.complete(this.world);
       } else if (action === "export") this.download(this.save);
-      else if (action === "skill") {
+      else if (action === "skill" && !this.root.querySelector("#pause-panel")?.childElementCount) {
         const pointer = this.game?.scene.input.activePointer;
         const aim = pointer
           ? this.game!.scene.cameras.main.getWorldPoint(pointer.x, pointer.y)

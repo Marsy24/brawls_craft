@@ -15,9 +15,7 @@ const boot = () => {
   const root = window.document.createElement("div");
   window.document.body.append(root);
   const click = (action: string, id?: string) => {
-    const b = root.querySelector(
-      `button[data-action="${action}"]${id ? `[data-id="${id}"]` : ""}`,
-    );
+    const b = root.querySelector(`button[data-action="${action}"]${id ? `[data-id="${id}"]` : ""}`);
     assert.ok(b, `${action} exists`);
     (b as unknown as HappyButton).click();
   };
@@ -33,19 +31,10 @@ test("DOM: create necromancer, escape name, navigate screens, restore saved char
     input.value = "<img src=x onerror=alert>";
     input.dispatchEvent(new window.Event("input", { bubbles: true }));
     click("create-confirm");
-    let saved = validateSave(
-      JSON.parse(window.localStorage.getItem(SAVE_KEY)!),
-    );
+    let saved = validateSave(JSON.parse(window.localStorage.getItem(SAVE_KEY)!));
     assert.equal(saved.characters[0].classId, "necromancer");
     assert.equal(root.querySelectorAll("img").length, 0);
-    for (const tab of [
-      "character",
-      "talents",
-      "inventory",
-      "collection",
-      "settings",
-      "missions",
-    ]) {
+    for (const tab of ["character", "talents", "inventory", "collection", "settings", "missions"]) {
       click("tab", tab);
       assert.ok(root.textContent!.length > 100);
     }
@@ -84,9 +73,7 @@ test("DOM: gear, talents, cosmetics, settings persist; locked actions remain dis
     const sound = root.querySelector("#sound") as unknown as HappyInput;
     sound.checked = !soundBefore;
     sound.dispatchEvent(new window.Event("change", { bubbles: true }));
-    const saved = validateSave(
-      JSON.parse(window.localStorage.getItem(SAVE_KEY)!),
-    );
+    const saved = validateSave(JSON.parse(window.localStorage.getItem(SAVE_KEY)!));
     assert.equal(saved.characters[0].equipment.weapon, c.inventory[0].id);
     assert.deepEqual(saved.characters[0].talents, ["a0", "a1"]);
     assert.equal(saved.chests, 2);
@@ -110,4 +97,35 @@ test("inline hero SVGs have unique gradient IDs", () => {
     ids(a).some((id) => ids(b).includes(id)),
     false,
   );
+});
+
+test("DOM: imported IDs and item names stay inert and equipment actions still work", async () => {
+  const { window, root, click } = boot();
+  try {
+    const s = freshSave();
+    const c = createCharacter("Искатель", "warrior");
+    c.id = 'hero" onclick="alert(1)';
+    const item = rollItem(1, () => 0);
+    item.id = 'item" onclick="alert(1)';
+    item.name = "<img src=x onerror=alert(1)>";
+    c.inventory = [item];
+    s.characters = [c];
+    s.selected = c.id;
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify(validateSave(s)));
+    new App(root as unknown as HTMLElement);
+    click("roster");
+    assert.equal(root.querySelectorAll("[onclick], img").length, 0);
+    const hero = root.querySelector('[data-action="select-hero"]')!;
+    assert.equal(hero.getAttribute("data-id"), c.id);
+    (hero as unknown as HappyButton).click();
+    click("tab", "inventory");
+    assert.equal(root.querySelectorAll("img, [onerror], [onclick]").length, 0);
+    const equip = root.querySelector('[data-action="equip"]')!;
+    assert.equal(equip.getAttribute("data-id"), item.id);
+    (equip as unknown as HappyButton).click();
+    const saved = validateSave(JSON.parse(window.localStorage.getItem(SAVE_KEY)!));
+    assert.equal(saved.characters[0].equipment.weapon, item.id);
+  } finally {
+    await window.happyDOM.abort();
+  }
 });

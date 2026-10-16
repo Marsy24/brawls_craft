@@ -93,7 +93,7 @@ export class BattleScene extends Phaser.Scene {
       document.removeEventListener("visibilitychange", visibility);
       this.audio.destroy();
     });
-    this.bridge.onHud(this.world, 60);
+    this.bridge.onHud(this.world, 0);
   }
   private drawTerrain() {
     const texture = this.textures.createCanvas(

@@ -6,8 +6,16 @@
 - Continued on `feat/complete-first-release` from current main (`c5ccb02`). The earlier local UI/rewards/save changes had not been included in PR #1.
 - Stages 4–5 implemented: five missions, two bosses, progression 1–15, 30 talents, three equipment slots, cosmetic collection, relics, validated saves and import/export.
 - Stage 6 implemented for browser acceptance: Russian camp screens, character creation, HUD, inventory, talents, collection, settings and results; original SVG artwork and synthesized audio.
-- Verification repeated: `npm test` 32/32 passed; `npm run balance` completed; `npm run simulate` 25/25 normal scenarios won; `npm run build` passed. Phaser vendor size warning is known (~340 KB gzip).
+- Verification repeated: `npm test` 33/33 passed; `npm run balance` completed; `npm run simulate` 25/25 normal scenarios won; `npm run build` passed. Phaser vendor size warning is known (~340 KB gzip).
 - Real browser checks remain pending. Playwright is present but Chromium is missing; its download returned an invalid/truncated ZIP. No browser rendering or FPS evidence was obtained.
+
+## Integration fixes and repeatable browser checks
+
+- Escaped imported character/item IDs in HTML attributes; regression verifies no injected markup/event attributes and working equipment actions.
+- Made battle background inert while menus are open; blocked hotbar actions during pause and added dialog semantics.
+- Initial HUD no longer reports an unmeasured 60 FPS; it waits for frame samples.
+- Added six Playwright smoke scenarios and GitHub Actions verification against a `/brawls_craft/` production build. These are pending execution on GitHub; local browser installation failed.
+- Node 24.19 local checks: 33/33 unit/integration/DOM tests, balance script, production build. Existing 25/25 campaign results remain valid; combat rules were not changed in this integration pass.
 
 ## Remaining release work
 
