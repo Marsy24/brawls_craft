@@ -4,7 +4,7 @@ TypeScript + Vite + Phaser 3.90. DOM/CSS menus intentionally avoid an extra Reac
 
 - `src/data/config.ts`: classes, 20 skills, 30 talents, enemies, missions, skins and shared numeric balance.
 - `src/systems/combat.ts`: damage formulas, enemy state, projectiles, status effects, summons, mission state; inject RNG for deterministic tests.
-- `src/systems/navigation.ts`: collision-aware movement and grid A*.
+- `src/systems/navigation.ts`: collision-aware movement and grid A\*.
 - `src/systems/progression.ts`: derived stats, XP, equipment, unlocks and talent prerequisites.
 - `src/systems/loot.ts`: weighted cosmetic rewards, pity, duplicate conversion and crafting.
 - `src/systems/save.ts`: versioned schema checks, atomic single-record storage, last-valid backup.

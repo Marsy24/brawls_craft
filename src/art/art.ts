@@ -1,7 +1,9 @@
 import type { ClassId, EnemyKind, Mission } from "../types";
 import { CLASSES, ENEMIES, SKINS } from "../data/config";
 export const svgUri = (svg: string) =>
-  "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  // Phaser calls atob for every data URL. Numeric entities keep XML ASCII.
+  "data:image/svg+xml;base64," +
+  btoa(svg.replace(/[^\x00-\x7f]/gu, (char) => `&#${char.codePointAt(0)};`));
 let artSerial = 0;
 /** Original vector illustrations. No third-party image assets or fonts. */
 export function heroArt(

@@ -200,3 +200,5 @@ test("killed enemy XP is awarded exactly once", () => {
   assert.equal(w.killXp, xp);
   assert.equal(w.kills, 1);
 });
+
+test('defense: damage pulls aggro from beacon and completed waves repair it',()=>{const w=new World(createCharacter('Archer','hunter'),MISSIONS[3],1,seeded(5));w.enemies=[];w.obstacles.length=0;w.player.x=500;w.player.y=600;const e=w.spawn('guard',{x:750,y:600});e.hp=9999;w.skill(2,e);w.basic(e);for(let i=0;i<25;i++)w.update(1/60,input(w));assert.ok(e.aggro>0);w.beacon.hp=w.beacon.maxHp*.5;w.enemies=[];for(let i=0;i<182;i++)w.update(1/60,input(w));assert.equal(w.wave,2);assert.ok(w.beacon.hp>w.beacon.maxHp*.5);});
