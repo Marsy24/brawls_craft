@@ -1,9 +1,14 @@
 import { test, expect } from "@playwright/test";
 
 for (const classId of ["warrior", "mage", "hunter", "necromancer", "assassin"]) {
-  test(`${classId}: create, render battle, cast, pause, retreat and restore`, async ({ page }) => {
+  test(`${classId}: create, render battle, cast, pause, retreat and restore`, async ({
+    page,
+  }, testInfo) => {
     const errors: string[] = [];
-    page.on("pageerror", (error) => errors.push(error.message));
+    page.on("pageerror", (error) => {
+      errors.push(error.message);
+      console.error(error.stack);
+    });
     page.on("console", (message) => {
       if (message.type() === "error") errors.push(message.text());
     });
@@ -13,6 +18,7 @@ for (const classId of ["warrior", "mage", "hunter", "necromancer", "assassin"]) 
     await page.locator("#hero-name").fill(`Проверка ${classId}`);
     await page.locator('[data-action="create-confirm"]').click();
     await expect(page.locator("h1")).toContainText("Карта экспедиций");
+    await testInfo.attach("camp", { body: await page.screenshot(), contentType: "image/png" });
     await page.locator('[data-action="launch"]').click();
     await expect(page.locator("#game-host canvas")).toBeVisible();
     await expect(page.locator("#hp-text")).toContainText("/");
@@ -23,6 +29,7 @@ for (const classId of ["warrior", "mage", "hunter", "necromancer", "assassin"]) 
     await page.keyboard.down("d");
     await page.waitForTimeout(250);
     await page.keyboard.up("d");
+    await testInfo.attach("battle", { body: await page.screenshot(), contentType: "image/png" });
     await page.keyboard.press("Escape");
     await expect(page.getByRole("dialog")).toBeVisible();
     const pausedTime = await page.locator("#time-text").textContent();

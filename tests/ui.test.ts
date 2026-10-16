@@ -8,7 +8,7 @@ import {
 import { App } from "../src/ui/app";
 import { createCharacter, rollItem } from "../src/systems/progression";
 import { freshSave, SAVE_KEY, validateSave } from "../src/systems/save";
-import { heroArt } from "../src/art/art";
+import { heroArt, svgUri } from "../src/art/art";
 const boot = () => {
   const window = new Window({ url: "https://game.test" });
   Object.assign(globalThis, { window, document: window.document });
@@ -128,4 +128,14 @@ test("DOM: imported IDs and item names stay inert and equipment actions still wo
   } finally {
     await window.happyDOM.abort();
   }
+});
+
+test("SVG data URLs are compatible with Phaser's base64 loader", () => {
+  for (const classId of ["warrior", "mage", "hunter", "necromancer", "assassin"] as const) {
+    const svg = heroArt(classId);
+    const url = svgUri(svg);
+    assert.ok(url.startsWith("data:image/svg+xml;base64,"));
+    assert.equal(atob(url.split(",")[1]), svg);
+  }
+  assert.equal(atob(svgUri("<text>Я</text>").split(",")[1]), "<text>&#1071;</text>");
 });

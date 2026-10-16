@@ -23,3 +23,9 @@
 - Terminal push has no GitHub credentials. Publication uses the connected GitHub integration, preserving the exact Git tree contents of the verified local commits. GitHub Actions results are pending until the PR is opened.
 - Production HTTP check passed: index and all four generated assets load under `/brawls_craft/` with exact build contents. This validates hosting paths, not WebGL rendering.
 - Execute `docs/MANUAL_QA.md`: browser controls, rendering, viewport layouts, human balance and long-session performance. The current implementation is a release candidate, not a fully accepted release.
+
+## Browser CI run 38919295910
+
+- Chromium installed successfully on GitHub Actions; unit checks, balance, campaign, build and camp layout checks passed.
+- All five battle smoke cases found a real startup failure: Phaser treats all data URLs as base64, while our SVG helper returned percent-encoded URLs. Its loader threw InvalidCharacterError in atob before scene creation.
+- Fixed the SVG helper to produce base64 ASCII XML; Unicode characters use numeric XML entities. Added a regression test for all class art and Unicode. Browser rerun is pending.
